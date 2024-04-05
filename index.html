@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>EADMeeting</title>
+
+	<style>
+		html, body {
+				position: relative;
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				overflow: hidden;
+
+				flex: 1;
+				display: flex;
+				flex-direction: column;
+		}
+		body > video {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+		}
+	</style>
+</head>
+<body>
+	<video controls muted disableremoteplayback webkit-playsinline playsinline></video>
+
+	<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js" crossorigin="anonymous"></script>
+	<script>
+		var urlParams = new URLSearchParams(window.location.search);
+    var src = urlParams.get('src');
+
+		var video = document.querySelector('video');
+
+    if (src) {
+			if (Hls.isSupported()) {
+				var hls = new Hls({
+					liveDurationInfinity: true
+				});
+				hls.loadSource(src);
+				hls.attachMedia(video);
+				hls.on(Hls.Events.MANIFEST_PARSED, function() {
+					video.play();
+				});
+			} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+				video.src = src;
+				video.addEventListener('loadedmetadata',function() {
+					video.play();
+				});
+			}
+		}
+	</script>
+</body>
+</html>
