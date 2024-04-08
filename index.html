@@ -33,14 +33,30 @@
 	<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js" crossorigin="anonymous"></script>
 	<script>
 		var urlParams = new URLSearchParams(window.location.search);
-    var src = urlParams.get('src');
+    var key = urlParams.get('key');
 
 		var video = document.querySelector('video');
 
-    if (src) {
+    if (key) {
+			var src = `https://live.mediaserver.eadmeeting.com/LiveApp/streams/${key}_adaptive.m3u8`;
+
 			if (Hls.isSupported()) {
 				var hls = new Hls({
-					liveDurationInfinity: true
+					liveDurationInfinity: true,
+					manifestLoadPolicy: {
+						default: {
+							timeoutRetry: {
+								maxNumRetry: Infinity,
+								retryDelayMs: 1000,
+								maxRetryDelayMs: 8000,
+							},
+							errorRetry: {
+								maxNumRetry: 3,
+								retryDelayMs: 1000,
+								maxRetryDelayMs: 8000,
+							},
+						},
+					}
 				});
 				hls.loadSource(src);
 				hls.attachMedia(video);
@@ -49,7 +65,7 @@
 				});
 			} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
 				video.src = src;
-				video.addEventListener('loadedmetadata',function() {
+				video.addEventListener('loadedmetadata', function() {
 					video.play();
 				});
 			}
