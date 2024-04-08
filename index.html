@@ -49,11 +49,15 @@
 								maxNumRetry: Infinity,
 								retryDelayMs: 1000,
 								maxRetryDelayMs: 8000,
+								backoff: 'exponential',
+								shouldRetry: () => true
 							},
 							errorRetry: {
 								maxNumRetry: Infinity,
 								retryDelayMs: 1000,
 								maxRetryDelayMs: 8000,
+								backoff: 'exponential',
+								shouldRetry: () => true
 							},
 						},
 					}
@@ -62,6 +66,23 @@
 				hls.attachMedia(video);
 				hls.on(Hls.Events.MANIFEST_PARSED, function() {
 					video.play();
+				});
+				hls.on(Hls.Events.ERROR, function(event, data) {
+					if (data.fatal) {
+						switch (data.type) {
+							case Hls.ErrorTypes.NETWORK_ERROR:
+								console.error('fatal network error encountered', data);
+								hls.startLoad();
+								break;
+							case Hls.ErrorTypes.MEDIA_ERROR:
+								console.log('fatal media error encountered, try to recover');
+								hls.recoverMediaError();
+								break;
+							default:
+								hls.destroy();
+								break;
+						}
+					}
 				});
 			} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
 				video.src = src;
