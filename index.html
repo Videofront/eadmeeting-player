@@ -35,7 +35,7 @@
 		var urlParams = new URLSearchParams(window.location.search);
     var key = urlParams.get('key');
 		var adaptive = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('adaptive') ?? true);
-		var cdn = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('cdn') ?? false);
+		var cdn = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('cdn') ?? true);
 		var autoplay = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('autoplay') ?? true);
 
 		var video = document.querySelector('video');
