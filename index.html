@@ -46,6 +46,7 @@
 			if (Hls.isSupported()) {
 				var hls = new Hls({
 					liveDurationInfinity: true,
+					lowLatencyMode: true,
 					manifestLoadPolicy: {
 						default: {
 							maxTimeToFirstByteMs: Infinity,
