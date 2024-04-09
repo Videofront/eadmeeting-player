@@ -48,21 +48,95 @@
 					liveDurationInfinity: true,
 					manifestLoadPolicy: {
 						default: {
+							maxTimeToFirstByteMs: Infinity,
+							maxLoadTimeMs: 20000,
 							timeoutRetry: {
 								maxNumRetry: Infinity,
-								retryDelayMs: 1000,
-								maxRetryDelayMs: 8000,
-								backoff: 'exponential',
+								retryDelayMs: 0,
+								maxRetryDelayMs: 0,
 								shouldRetry: () => true
 							},
 							errorRetry: {
 								maxNumRetry: Infinity,
 								retryDelayMs: 1000,
 								maxRetryDelayMs: 8000,
-								backoff: 'exponential',
 								shouldRetry: () => true
 							},
 						},
+					},
+					playlistLoadPolicy: {
+						default: {
+							maxTimeToFirstByteMs: 10000,
+							maxLoadTimeMs: 20000,
+							timeoutRetry: {
+								maxNumRetry: 2,
+								retryDelayMs: 0,
+								maxRetryDelayMs: 0,
+							},
+							errorRetry: {
+								maxNumRetry: 2,
+								retryDelayMs: 1000,
+								maxRetryDelayMs: 8000,
+							},
+						},
+					},
+					fragLoadPolicy: {
+						default: {
+							maxTimeToFirstByteMs: 10000,
+							maxLoadTimeMs: 120000,
+							timeoutRetry: {
+								maxNumRetry: 4,
+								retryDelayMs: 0,
+								maxRetryDelayMs: 0,
+							},
+							errorRetry: {
+								maxNumRetry: 6,
+								retryDelayMs: 1000,
+								maxRetryDelayMs: 8000,
+							},
+						},
+					},
+					keyLoadPolicy: {
+						default: {
+							maxTimeToFirstByteMs: 8000,
+							maxLoadTimeMs: 20000,
+							timeoutRetry: {
+								maxNumRetry: 1,
+								retryDelayMs: 1000,
+								maxRetryDelayMs: 20000,
+								backoff: 'linear',
+							},
+							errorRetry: {
+								maxNumRetry: 8,
+								retryDelayMs: 1000,
+								maxRetryDelayMs: 20000,
+								backoff: 'linear',
+							},
+						},
+					},
+					certLoadPolicy: {
+						default: {
+							maxTimeToFirstByteMs: 8000,
+							maxLoadTimeMs: 20000,
+							timeoutRetry: null,
+							errorRetry: null,
+						},
+					},
+					steeringManifestLoadPolicy: {
+						default: {
+							maxTimeToFirstByteMs: 10000,
+							maxLoadTimeMs: 20000,
+							timeoutRetry: {
+								maxNumRetry: 2,
+								retryDelayMs: 0,
+								maxRetryDelayMs: 0,
+							},
+							errorRetry: {
+								maxNumRetry: 1,
+								retryDelayMs: 1000,
+								maxRetryDelayMs: 8000,
+							},
+						}
 					}
 				});
 				hls.loadSource(src);
