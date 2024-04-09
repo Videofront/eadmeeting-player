@@ -7,16 +7,16 @@
 
 	<style>
 		html, body {
-				position: relative;
-				margin: 0;
-				padding: 0;
-				width: 100%;
-				height: 100%;
-				overflow: hidden;
+			position: relative;
+			margin: 0;
+			padding: 0;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
 
-				flex: 1;
-				display: flex;
-				flex-direction: column;
+			flex: 1;
+			display: flex;
+			flex-direction: column;
 		}
 		body > video {
 			position: absolute;
@@ -28,17 +28,20 @@
 	</style>
 </head>
 <body>
-	<video controls muted disableremoteplayback webkit-playsinline playsinline></video>
+	<video controls disableremoteplayback webkit-playsinline playsinline></video>
 
 	<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js" crossorigin="anonymous"></script>
 	<script>
 		var urlParams = new URLSearchParams(window.location.search);
     var key = urlParams.get('key');
+		var adaptive = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('adaptive') ?? true);
+		var cdn = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('cdn') ?? false);
+		var autoplay = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('autoplay') ?? true);
 
 		var video = document.querySelector('video');
 
-    if (key) {
-			var src = `https://live.mediaserver.eadmeeting.com/LiveApp/streams/${key}_adaptive.m3u8`;
+    if (key && !key.trim()) {
+			var src = `${cdn ? 'https://live.mediaserver.eadmeeting.com': 'https://mediaserver.eadmeeting.com:5443'}/LiveApp/streams/${key}${adaptive ? '_adaptive' : ''}.m3u8`;
 
 			if (Hls.isSupported()) {
 				var hls = new Hls({
@@ -65,7 +68,10 @@
 				hls.loadSource(src);
 				hls.attachMedia(video);
 				hls.on(Hls.Events.MANIFEST_PARSED, function() {
-					video.play();
+					if (autoplay) {
+						video.muted = true;
+						video.play();
+					}
 				});
 				hls.on(Hls.Events.ERROR, function(event, data) {
 					if (data.fatal) {
@@ -87,7 +93,10 @@
 			} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
 				video.src = src;
 				video.addEventListener('loadedmetadata', function() {
-					video.play();
+					if (autoplay) {
+						video.muted = true;
+						video.play();
+					}
 				});
 			}
 		}
