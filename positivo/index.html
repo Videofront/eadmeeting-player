@@ -51,29 +51,10 @@
 		var cdn = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('cdn') ?? true);
 		var autoplay = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('autoplay') ?? true);
 
-		if (
-			[
-				'zlfVfUgCDtV3GkdB1738842945298',
-				'jWwsiKkxQiRYXQkN1738842966446',
-				'PIUYIqQVGePoocZf1738002337050',
-				'4pwnJFJYBJNM6MG81738002376004',
-				'F9fbKzU5FfLI5nol1738068285981',
-				'L1s4FhrHRQxjVLKA1738002495354',
-				'MXL4JNVENAZTN3sj1738002433968',
-				'P4U9BogIk1SjSyVg1738002464686',
-				'joF6xyEFDGRSRX0o1727200447554',
-				'p1rvz81orXaDGkTl1738068248208'
-			].includes(key)
-		) {
-			var url = new URL(window.location.href);
-			url.pathname = '/positivo/';
-			window.location.href = url.href;
-		}
-
 		var video = document.querySelector('video');
 
     if (key) {
-			var src = `${cdn ? 'https://live.mediaserver.eadmeeting.com': 'https://mediaserver.eadmeeting.com:5443'}/LiveApp/streams/${key}${adaptive ? '_adaptive' : ''}.m3u8`;
+			var src = `${cdn ? 'https://z28k7mi3fl.map.azionedge.net': 'https://mediaserver.eadmeeting.com:5443'}/LiveApp/streams/${key}${adaptive ? '_adaptive' : ''}.m3u8`;
 
 			if (Hls.isSupported()) {
 				var hls = new Hls({
