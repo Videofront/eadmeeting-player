@@ -20,205 +20,29 @@
 			display: flex;
 			flex-direction: column;
 		}
-		body > video {
+		body > iframe {
 			position: absolute;
 			left: 0;
 			top: 0;
 			width: 100%;
 			height: 100%;
 		}
-
-		body > video, body > #sprite-plyr, body > .plyr {
-			position: absolute !important;
-			left: 0 !important;
-			top: 0 !important;
-			width: 100% !important;
-			height: 100% !important;
-			z-index: 9007199254740990 !important;
-		}
 	</style>
 </head>
 <body>
-	<video controls disableremoteplayback webkit-playsinline playsinline crossorigin="anonymous"></video>
-
-	<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js" crossorigin="anonymous"></script>
-	<script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.min.js" crossorigin="anonymous"></script>
+	<iframe width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
 
 	<script>
 		var urlParams = new URLSearchParams(window.location.search);
     var key = urlParams.get('key');
-		var adaptive = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('adaptive') ?? true);
+		// var adaptive = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('adaptive') ?? true);
 		var cdn = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('cdn') ?? true);
-		var autoplay = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('autoplay') ?? true);
-
-		var video = document.querySelector('video');
+		// var autoplay = !/^(false|0|undefined|null|NaN|)$/.test(urlParams.get('autoplay') ?? true);
+		var iframe = document.querySelector('iframe');
 
     if (key) {
-			var src = `${cdn ? 'https://syqfsfw7nh.map.azionedge.net': 'https://mediaserver.eadmeeting.com:5443'}/LiveApp/streams/${key}${adaptive ? '_adaptive' : ''}.m3u8`;
-
-			if (Hls.isSupported()) {
-				var hls = new Hls({
-					liveDurationInfinity: true,
-					lowLatencyMode: true,
-					maxBufferLength: 30,
-					maxMaxBufferLength: 600,
-					maxBufferSize: 60,
-					backBufferLength: 60,
-					maxBufferHole: 0.1,
-					manifestLoadPolicy: {
-						default: {
-							maxTimeToFirstByteMs: Infinity,
-							maxLoadTimeMs: 20000,
-							timeoutRetry: {
-								maxNumRetry: Infinity,
-								retryDelayMs: 0,
-								maxRetryDelayMs: 0,
-								shouldRetry: () => true
-							},
-							errorRetry: {
-								maxNumRetry: Infinity,
-								retryDelayMs: 1000,
-								maxRetryDelayMs: 8000,
-								shouldRetry: () => true
-							},
-						},
-					},
-					playlistLoadPolicy: {
-						default: {
-							maxTimeToFirstByteMs: 10000,
-							maxLoadTimeMs: 20000,
-							timeoutRetry: {
-								maxNumRetry: 2,
-								retryDelayMs: 0,
-								maxRetryDelayMs: 0,
-							},
-							errorRetry: {
-								maxNumRetry: 2,
-								retryDelayMs: 1000,
-								maxRetryDelayMs: 8000,
-							},
-						},
-					},
-					fragLoadPolicy: {
-						default: {
-							maxTimeToFirstByteMs: 10000,
-							maxLoadTimeMs: 120000,
-							timeoutRetry: {
-								maxNumRetry: 4,
-								retryDelayMs: 0,
-								maxRetryDelayMs: 0,
-							},
-							errorRetry: {
-								maxNumRetry: 6,
-								retryDelayMs: 1000,
-								maxRetryDelayMs: 8000,
-							},
-						},
-					},
-					keyLoadPolicy: {
-						default: {
-							maxTimeToFirstByteMs: 8000,
-							maxLoadTimeMs: 20000,
-							timeoutRetry: {
-								maxNumRetry: 1,
-								retryDelayMs: 1000,
-								maxRetryDelayMs: 20000,
-								backoff: 'linear',
-							},
-							errorRetry: {
-								maxNumRetry: 8,
-								retryDelayMs: 1000,
-								maxRetryDelayMs: 20000,
-								backoff: 'linear',
-							},
-						},
-					},
-					certLoadPolicy: {
-						default: {
-							maxTimeToFirstByteMs: 8000,
-							maxLoadTimeMs: 20000,
-							timeoutRetry: null,
-							errorRetry: null,
-						},
-					},
-					steeringManifestLoadPolicy: {
-						default: {
-							maxTimeToFirstByteMs: 10000,
-							maxLoadTimeMs: 20000,
-							timeoutRetry: {
-								maxNumRetry: 2,
-								retryDelayMs: 0,
-								maxRetryDelayMs: 0,
-							},
-							errorRetry: {
-								maxNumRetry: 1,
-								retryDelayMs: 1000,
-								maxRetryDelayMs: 8000,
-							},
-						}
-					}
-				});
-				hls.loadSource(src);
-				hls.attachMedia(video);
-				hls.on(Hls.Events.MANIFEST_PARSED, function() {
-					var plyr = new Plyr(video, {
-						controls: ['play', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
-						hideControls: false,
-						hideControlsTimeout: 3000,
-						quality: {
-							default: -1,
-							options: [-1].concat(hls.levels.map(level => level.height)),
-							forced: true,
-							onChange: height => {
-								hls.currentLevel = hls.levels.findIndex(level => level.height == height)
-							},
-						},
-						i18n: {
-							qualityBadge: {
-								'-1': 'Auto',
-								2160: '4K',
-								1440: 'HD',
-								1080: 'HD',
-								720: 'HD',
-								540: 'SD',
-								480: 'SD',
-								360: 'SD',
-								240: 'SD'
-							}
-						}
-					});
-
-					if (autoplay) {
-						plyr.muted = true;
-						plyr.play();
-					}
-				});
-				hls.on(Hls.Events.ERROR, function(event, data) {
-					if (data.fatal) {
-						switch (data.type) {
-							case Hls.ErrorTypes.NETWORK_ERROR:
-								console.error('fatal network error encountered', data);
-								hls.startLoad();
-								break;
-							case Hls.ErrorTypes.MEDIA_ERROR:
-								console.log('fatal media error encountered, try to recover');
-								hls.recoverMediaError();
-								break;
-							default:
-								hls.destroy();
-								break;
-						}
-					}
-				});
-			} else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-				video.src = src;
-				video.addEventListener('loadedmetadata', function() {
-					if (autoplay) {
-						video.muted = true;
-						video.play();
-					}
-				});
-			}
+			
+			iframe.src = `${cdn ? 'https://syqfsfw7nh.map.azionedge.net': 'https://mediaserver.videofront.com.br:5443'}/LiveApp/play.html?id=${key}&playOrder=hls`;
 		}
 	</script>
 </body>
