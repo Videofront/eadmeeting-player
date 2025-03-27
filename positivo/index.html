@@ -41,7 +41,7 @@
 <body>
 	<video controls disableremoteplayback webkit-playsinline playsinline crossorigin="anonymous"></video>
 
-	<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.7/dist/hls.min.js" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/hls.js@1.6.0/dist/hls.min.js" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.min.js" crossorigin="anonymous"></script>
 
 	<script>
@@ -54,7 +54,7 @@
 		var video = document.querySelector('video');
 
     if (key) {
-			var src = `${cdn ? 'https://z28k7mi3fl.map.azionedge.net': 'https://mediaserver.eadmeeting.com:5443'}/LiveApp/streams/${key}${adaptive ? '_adaptive' : ''}.m3u8`;
+			var src = `${cdn ? 'https://z28k7mi3fl.map.azionedge.net' : 'https://mediaserver.eadmeeting.com:5443'}/LiveApp/streams/${key}${adaptive ? '_adaptive' : ''}.m3u8`;
 
 			if (Hls.isSupported()) {
 				var hls = new Hls({
@@ -162,7 +162,7 @@
 				hls.attachMedia(video);
 				hls.on(Hls.Events.MANIFEST_PARSED, function() {
 					var plyr = new Plyr(video, {
-						controls: ['play', 'current-time', 'mute', 'volume', 'settings', 'fullscreen'],
+						controls: ['play', 'current-time', 'mute', 'volume', 'settings', 'pip', 'airplay', 'fullscreen'],
 						hideControls: false,
 						hideControlsTimeout: 3000,
 						quality: {
