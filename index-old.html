@@ -54,7 +54,7 @@
 		var video = document.querySelector('video');
 
     if (key) {
-			var src = `${cdn ? 'https://etflwbqybn.map.azionedge.net' : 'https://test.mediaserver.eadmeeting.com:5443'}/LiveApp/streams/${key}${adaptive ? '_adaptive' : ''}.m3u8`;
+			var src = `${cdn ? 'https://live.mediaserver.eadmeeting.com' : 'https://mediaserver.videofront.com.br:5443'}/LiveApp/streams/${key}${adaptive ? '_adaptive' : ''}.m3u8`;
 
 			if (Hls.isSupported()) {
 				var hls = new Hls({
